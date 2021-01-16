@@ -3,11 +3,13 @@ PATH
   specs:
     kustomizer (0.1.0)
       accessory (~> 0.1.9)
+      base32-multi
 
 GEM
   remote: https://rubygems.org/
   specs:
     accessory (0.1.9)
+    base32-multi (0.1.1)
     diff-lcs (1.4.4)
     rake (13.0.3)
     rspec (3.10.0)
