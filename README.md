@@ -55,11 +55,11 @@ Status of support for other features:
 * KustomizeR is modular, and is intended to be loaded and used as a library,
   rather than being spawned as a subprocess. Crucially, the load path for
   plugins is under the caller's control, and so higher-level frameworks can
-  manage project-level KustomizeR plugins.
+  inject plugins into a KustomizeR session to suit their needs.
 
 * Some `kustomization.yaml` features have been temporarily extended in
   non-compatible ways.
-  * `patchesJson6902` accepts an inline an `ops` array
+  * `patchesJson6902` accepts an inline `ops` array
   * `patchesJson6902` accepts a `gsub` op
 
 (Before v1.0, these extensions will be moved to become built-in plugins, to
