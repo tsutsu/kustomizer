@@ -20,14 +20,14 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
       (@doc['bases'] || []) +
       (@doc['resources'] || [])
 
-    gen_pathspecs =
+    gen_plugin_pathspecs =
       (@doc['generators'] || [])
 
     input_emitters = rc_pathspecs.map do |rel_path|
       build_input_emitter(rel_path)
     end
 
-    input_emitters += gen_pathspecs.map do |rel_path|
+    input_emitters += gen_plugin_pathspecs.map do |rel_path|
       Kustomize::Emitter::PluginEmitter.new(
         build_input_emitter(rel_path),
         session: @session
