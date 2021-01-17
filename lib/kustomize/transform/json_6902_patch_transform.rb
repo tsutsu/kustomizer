@@ -44,7 +44,7 @@ class Kustomize::Transform::Json6902PatchTransform < Kustomize::Transform
   attr_reader :target
   attr_reader :patches
 
-  def apply(resource_doc)
+  def rewrite(resource_doc)
     if @target.match?(resource_doc)
       @patches.inject(resource_doc){ |doc, patch| patch.apply(doc) }
     else

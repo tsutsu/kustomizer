@@ -9,7 +9,11 @@ class Kustomize::Transform
     private :new
   end
 
-  def apply(rc)
+  def rewrite_all(rcs)
+    rcs.map{ |rc| rewrite(rc) }
+  end
+
+  def rewrite(rc)
     rc
   end
 end

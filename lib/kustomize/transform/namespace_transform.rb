@@ -29,7 +29,7 @@ class Kustomize::Transform::NamespaceTransform < Kustomize::Transform
     ]
   }
 
-  def apply(rc_doc)
+  def rewrite(rc_doc)
     rc_kind = rc_doc['kind']
     use_lenses = []
 

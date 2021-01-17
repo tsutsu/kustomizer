@@ -90,8 +90,8 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
   end
 
   def emit
-    self.input_resources.map do |rc|
-      self.transforms.inject(rc){ |doc, xform| xform.apply(doc) }
+    self.transforms.inject(self.input_resources) do |rcs, xform|
+      xform.rewrite_all(rcs)
     end
   end
 end

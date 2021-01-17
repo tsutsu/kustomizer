@@ -27,7 +27,7 @@ class Kustomize::Transform::ImageTransform < Kustomize::Transform
     "Deployment" => Lens["spec", "template", "spec", "containers", Access.all, "image"]
   }
 
-  def apply(rc_doc)
+  def rewrite(rc_doc)
     lens = LENS_BY_KIND[rc_doc['kind']]
     return rc_doc unless lens
 
