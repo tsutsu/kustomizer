@@ -1,12 +1,13 @@
 require 'kustomize/emitter/document_emitter'
 require 'kustomize/emitter/file_emitter'
 require 'kustomize/emitter/directory_emitter'
-require 'kustomize/emitter/plugin_emitter'
+require 'kustomize/emitter/generator_plugins_emitter'
 
 require 'kustomize/transform/json_6902_patch_transform'
 require 'kustomize/transform/image_transform'
 require 'kustomize/transform/namespace_transform'
 require 'kustomize/transform/name_digest_autosuffix_transform'
+require 'kustomize/transform/transformer_plugins_transform'
 
 class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustomize::Emitter::DocumentEmitter
   def source_directory
@@ -27,11 +28,17 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
       build_input_emitter(rel_path)
     end
 
-    input_emitters += gen_plugin_pathspecs.map do |rel_path|
-      Kustomize::Emitter::PluginEmitter.new(
-        build_input_emitter(rel_path),
+    gen_plugin_rc_emitters = gen_plugin_pathspecs.map do |rel_path|
+      build_input_emitter(rel_path)
+    end
+
+    unless gen_plugin_rc_emitters.empty?
+      gen_plugins_emitter = Kustomize::Emitter::GeneratorPluginsEmitter.new(
+        gen_plugin_rc_emitters,
         session: @session
       )
+
+      input_emitters.push(gen_plugins_emitter)
     end
 
     @input_emitters = input_emitters
@@ -66,6 +73,24 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
     end
   end
 
+  def transformer_plugin_transforms
+    xformer_plugin_rc_emitters =
+      (@doc['transformers'] || []).map do |rel_path|
+        build_input_emitter(rel_path)
+      end
+
+    if xformer_plugin_rc_emitters.length > 0
+      xform = Kustomize::Transform::TransformerPluginsTransform.create(
+        xformer_plugin_rc_emitters,
+        session: @session
+      )
+
+      [xform]
+    else
+      []
+    end
+  end
+
   def namespace_transforms
     if new_ns = @doc['namespace']
       [Kustomize::Transform::NamespaceTransform.create(new_ns)]
@@ -85,7 +110,8 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
       self.namespace_transforms,
       self.image_transforms,
       self.name_digest_autosuffix_transforms,
-      self.json_6902_patch_transforms
+      self.json_6902_patch_transforms,
+      self.transformer_plugin_transforms
     ].flatten
   end
 

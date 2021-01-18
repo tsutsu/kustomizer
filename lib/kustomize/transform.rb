@@ -16,4 +16,8 @@ class Kustomize::Transform
   def rewrite(rc)
     rc
   end
+
+  def inspect
+    "#<#{self.class}>"
+  end
 end

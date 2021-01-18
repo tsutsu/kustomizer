@@ -14,4 +14,8 @@ class Kustomize::Emitter
   def to_yaml_stream
     self.emit.map(&:to_yaml).join("")
   end
+
+  def inspect
+    "#<#{self.class}>"
+  end
 end

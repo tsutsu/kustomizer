@@ -1,31 +1,46 @@
-require 'kustomize/plugin'
+require 'singleton'
+
+require 'kustomize/plugin_registry'
 
 class Kustomize::PluginManager
   def initialize(session:)
     @session = session
-    @instances = {}
+    @registry = Kustomize::PluginRegistry.instance
   end
 
-  def get(api_version, kind)
-    cache_key = [api_version, kind]
-    cached_inst = @instances[cache_key]
-    return cached_inst if cached_inst
+  def get(api_version:, kind:)
+    plugin_klass = @registry.get(api_version: api_version, kind: kind)
+    return plugin_klass if plugin_klass
 
-    @instances[cache_key] = self.load(api_version, kind)
+    try_loading(api_version, kind)
   end
 
-  def load(api_version, kind)
-      @session.load_paths
-      .each{ |prefix| puts(prefix / api_version / "#{kind.downcase}.rb") }
+  private
+  def try_loading(api_version, kind)
+    rel_load_path = Pathname.new(api_version) / "#{underscore(kind)}.rb"
 
-    load_path =
-      @session.load_paths
-      .map{ |prefix| prefix / api_version / "#{kind.downcase}.rb" }
+    abs_load_path =
+      @session.effective_load_paths
+      .map{ |prefix| prefix / rel_load_path }
       .find{ |f| f.file? }
 
-    raise ArgumentError, "unknown kustomize plugin #{kind}" unless load_path
+    raise LoadError, "could not find kustomize plugin to load" unless abs_load_path
 
-    Class.new(Kustomize::Plugin)
-    .tap{ |klass| klass.class_eval(load_path.read) }
+    Kernel.require(abs_load_path)
+
+    plugin_klass = @registry.get(api_version: api_version, kind: kind)
+
+    raise LoadError, "#{abs_load_path} did not define expected plugin" unless plugin_klass
+
+    plugin_klass
+  end
+
+  private
+  def underscore(str)
+    str
+    .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+    .gsub(/([a-z\d])([A-Z])/,'\1_\2')
+    .tr("-", "_")
+    .downcase
   end
 end
