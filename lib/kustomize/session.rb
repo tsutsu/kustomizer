@@ -10,11 +10,11 @@ class Kustomize::Session
 
   attr_reader :plugin_manager
 
-  def builtin_load_path
-    Pathname.new(__FILE__).expand_path.parent / 'builtin_plugins'
+  def builtin_load_paths
+    [Pathname.new(__FILE__).expand_path.parent / 'builtin_plugins']
   end
 
   def effective_load_paths
-    @load_paths + [self.builtin_load_path]
+    @load_paths + self.builtin_load_paths
   end
 end
