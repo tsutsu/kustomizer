@@ -6,7 +6,9 @@ require 'kustomize/emitter/generator_plugins_emitter'
 require 'kustomize/transform/json_6902_patch_transform'
 require 'kustomize/transform/image_transform'
 require 'kustomize/transform/namespace_transform'
-require 'kustomize/transform/name_digest_autosuffix_transform'
+require 'kustomize/transform/fingerprint_suffix_transform'
+require 'kustomize/transform/ref_fixup_transform'
+require 'kustomize/transform/purge_internal_annotations_transform'
 require 'kustomize/transform/transformer_plugins_transform'
 
 class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustomize::Emitter::DocumentEmitter
@@ -99,19 +101,17 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
     end
   end
 
-  def name_digest_autosuffix_transforms
-    [Kustomize::Transform::NameDigestAutosuffixTransform.create(self)]
-  end
-
   def transforms
     return @transforms if @transforms
 
     @transforms = [
       self.namespace_transforms,
       self.image_transforms,
-      self.name_digest_autosuffix_transforms,
+      Kustomize::Transform::FingerprintSuffixTransform.instance,
       self.json_6902_patch_transforms,
-      self.transformer_plugin_transforms
+      self.transformer_plugin_transforms,
+      Kustomize::Transform::RefFixupTransform.instance,
+      Kustomize::Transform::PurgeInternalAnnotationsTransform.instance
     ].flatten
   end
 
