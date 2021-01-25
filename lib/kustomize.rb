@@ -5,18 +5,22 @@ require 'kustomize/session'
 
 require 'kustomize/emitter/file_emitter'
 require 'kustomize/emitter/directory_emitter'
+require 'kustomize/emitter/finalizer_emitter'
 require 'kustomize/emitter/document_emitter/kustomization_document_emitter'
 
 module Kustomize
   def self.load(rel_path_or_rc, session: Kustomize::Session.new, source_path: nil)
-    case rel_path_or_rc
-    when String, Pathname
-      load_path(rel_path_or_rc, session: session)
-    when Hash
-      load_doc(rel_path_or_rc, session: session, source_path: source_path)
-    else
-      raise ArgumentError, "must be a kustomization document or a path to one, instead got: #{rel_path_or_rc.inspect}"
-    end
+    base_emitter =
+      case rel_path_or_rc
+      when String, Pathname
+        load_path(rel_path_or_rc, session: session)
+      when Hash
+        load_doc(rel_path_or_rc, session: session, source_path: source_path)
+      else
+        raise ArgumentError, "must be a kustomization document or a path to one, instead got: #{rel_path_or_rc.inspect}"
+      end
+
+    Kustomize::Emitter::FinalizerEmitter.new(base_emitter)
   end
 
   def self.load_doc(rc, session: Kustomize::Session.new, source_path:)

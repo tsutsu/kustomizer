@@ -107,11 +107,8 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
     @transforms = [
       self.namespace_transforms,
       self.image_transforms,
-      Kustomize::Transform::FingerprintSuffixTransform.instance,
       self.json_6902_patch_transforms,
-      self.transformer_plugin_transforms,
-      Kustomize::Transform::RefFixupTransform.instance,
-      Kustomize::Transform::PurgeInternalAnnotationsTransform.instance
+      self.transformer_plugin_transforms
     ].flatten
   end
 
