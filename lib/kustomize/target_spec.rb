@@ -22,11 +22,11 @@ class Kustomize::TargetSpec
   end
 
   def get_name(rc)
-    rc.dig('spec', 'name')
+    rc.dig('metadata', 'name')
   end
 
   def get_namespace(rc)
-    rc.dig('spec', 'namespace') || 'default'
+    rc.dig('metadata', 'namespace') || 'default'
   end
 
   def match?(rc)
