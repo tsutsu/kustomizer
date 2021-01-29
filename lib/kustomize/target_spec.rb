@@ -37,8 +37,8 @@ class Kustomize::TargetSpec
     end
 
     return false if @match_kind and (rc['kind'] != @match_kind)
-    return false if @match_name and get_name(resource_doc) != @match_name
-    return false if @match_namespace and get_namespace(resource_doc) != @match_namespace
+    return false if @match_name and get_name(rc) != @match_name
+    return false if @match_namespace and get_namespace(rc) != @match_namespace
 
     true
   end
