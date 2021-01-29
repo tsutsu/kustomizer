@@ -14,8 +14,7 @@ class Kustomize::Transform::RefFixupTransform < Kustomize::Transform
 
   FINGERPRINT_LENS = Lens['metadata', 'annotations', 'kustomizer.covalenthq.com/effective-fingerprint']
 
-  KEY_REF_LENSES_BY_KIND = {
-    "Deployment" => [
+  POD_TEMPLATE_LENSES = [
       Lens["spec", "template", "spec", "containers", Access.all, "envFrom", Access.all, "configMapRef", "name"],
       Lens["spec", "template", "spec", "containers", Access.all, "env", Access.all, "valueFrom", "configMapKeyRef", "name"],
       Lens["spec", "template", "spec", "volumes", Access.all, "configMap", "name"],
@@ -23,7 +22,12 @@ class Kustomize::Transform::RefFixupTransform < Kustomize::Transform
       Lens["spec", "template", "spec", "containers", Access.all, "env", Access.all, "valueFrom", "secretKeyRef", "name"],
       Lens["spec", "template", "spec", "volumes", Access.all, "secret", "name"],
       Lens["spec", "template", "spec", "volumes", Access.all, "secret", "secretName"]
-    ]
+  ]
+
+  KEY_REF_LENSES_BY_KIND = {
+    "Deployment" => POD_TEMPLATE_LENSES,
+    "StatefulSet" => POD_TEMPLATE_LENSES,
+    "DaemonSet" => POD_TEMPLATE_LENSES
   }
 
   def rewrite_all(rcs)
