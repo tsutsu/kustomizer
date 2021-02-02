@@ -23,8 +23,12 @@ class Kustomize::Transform::ImageTransform < Kustomize::Transform
     @new_digest = new_digest
   end
 
+  TEMPLATE_POD_SPEC_LENS = Lens["spec", "template", "spec", "containers", Access.all, "image"]
+
   LENS_BY_KIND = {
-    "Deployment" => Lens["spec", "template", "spec", "containers", Access.all, "image"]
+    "Deployment" => TEMPLATE_POD_SPEC_LENS,
+    "DaemonSet" => TEMPLATE_POD_SPEC_LENS,
+    "StatefulSet" => TEMPLATE_POD_SPEC_LENS
   }
 
   def rewrite(rc_doc)
