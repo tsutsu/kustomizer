@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kustomizer (0.1.6)
+    kustomizer (0.1.7)
       accessory (~> 0.1.9)
       base32-multi
 
