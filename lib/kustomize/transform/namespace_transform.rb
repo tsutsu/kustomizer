@@ -26,6 +26,10 @@ class Kustomize::Transform::NamespaceTransform < Kustomize::Transform
 
     "SealedSecret" => [
       Lens["spec", "template", "metadata", "namespace"]
+    ],
+
+    "ServiceMonitor" => [
+      Lens["spec", "namespaceSelector", "matchNames", Access.first]
     ]
   }
 
