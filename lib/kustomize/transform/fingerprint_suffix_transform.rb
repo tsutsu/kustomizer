@@ -35,7 +35,13 @@ class Kustomize::Transform::FingerprintSuffixTransform < Kustomize::Transform
     return rc unless APPLICABLE_KINDS.member?(rc_kind)
 
     FINGERPRINT_LENS.update_in(rc) do |orig_value|
-      next(:keep) if orig_value
+      if orig_value
+        if orig_value == ''
+          next(:pop)
+        else
+          next(:keep)
+        end
+      end
 
       content_part = CONTENT_LENS_BY_KIND[rc_kind].get_in(rc)
       content_ser = content_part.to_json
@@ -47,9 +53,11 @@ class Kustomize::Transform::FingerprintSuffixTransform < Kustomize::Transform
     base_name = NAME_LENS.get_in(rc)
     fingerprint = FINGERPRINT_LENS.get_in(rc)
 
-    NAME_LENS.update_in(rc) do |base_name|
-      suffixed_name = [base_name, fingerprint].join(SUFFIX_JOINER)
-      [:set, suffixed_name]
+    if fingerprint
+      NAME_LENS.update_in(rc) do |base_name|
+        suffixed_name = [base_name, fingerprint].join(SUFFIX_JOINER)
+        [:set, suffixed_name]
+      end
     end
 
     rc
