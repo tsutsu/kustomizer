@@ -7,6 +7,7 @@ require 'kustomize/json_6902_patch/add_op'
 require 'kustomize/json_6902_patch/replace_op'
 require 'kustomize/json_6902_patch/remove_op'
 require 'kustomize/json_6902_patch/gsub_op'
+require 'kustomize/json_6902_patch/append_op'
 
 class Kustomize::Transform::Json6902PatchTransform < Kustomize::Transform
   def self.create(kustomization_file, op_spec)
