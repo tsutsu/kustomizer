@@ -17,6 +17,10 @@ class Kustomize::Json6902Patch::Op
       e = e.gsub('~1', '/')
       if e == ":all"
         Accessory::Access.all
+      elsif e == ":first"
+        Accessory::Access.first
+      elsif e == ":last"
+        Accessory::Access.last
       elsif e.match?(/^\d+$/)
         e.to_i
       else
