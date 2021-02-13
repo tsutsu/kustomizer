@@ -33,6 +33,3 @@ DEPENDENCIES
   kustomizer!
   rake (~> 13.0)
   rspec (~> 3.0)
-
-BUNDLED WITH
-   1.17.2
