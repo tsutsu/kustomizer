@@ -19,8 +19,8 @@ Enough Library to solve our own problems :wink:)
 Status of `kustomization.yaml` feature support:
 
 * [x] `bases`
-* [ ] `commonAnnotations`
-* [ ] `commonLabels`
+* [x] `commonAnnotations`
+* [x] `commonLabels`
 * [ ] `configMapGenerator` and `secretGenerator`
 * [ ] `crds`
 * [x] `generators` (see [Extending Kustomize](https://kubectl.docs.kubernetes.io/guides/extending_kustomize/))
