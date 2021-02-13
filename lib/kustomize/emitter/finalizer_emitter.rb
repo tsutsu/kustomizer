@@ -2,11 +2,14 @@ require 'kustomize/emitter'
 
 require 'kustomize/transform/fingerprint_suffix_transform'
 require 'kustomize/transform/ref_fixup_transform'
+require 'kustomize/transform/filter_for_session_specified_component_transform'
+require 'kustomize/transform/drop_filtered_documents_transform'
 require 'kustomize/transform/purge_internal_annotations_transform'
 
 class Kustomize::Emitter::FinalizerEmitter < Kustomize::Emitter
-  def initialize(input_emitter)
+  def initialize(input_emitter, session:)
     @input_emitter = input_emitter
+    @session = session
   end
 
   def input_emitters
@@ -16,11 +19,20 @@ class Kustomize::Emitter::FinalizerEmitter < Kustomize::Emitter
   def transforms
     return @transforms if @transforms
 
+    final_filters =
+      if comp = @session.only_emit_component
+        [Kustomize::Transform::FilterForSessionSpecifiedComponentTransform.create(comp)]
+      else
+        []
+      end
+
     @transforms = [
       Kustomize::Transform::FingerprintSuffixTransform.instance,
       Kustomize::Transform::RefFixupTransform.instance,
+      final_filters,
+      Kustomize::Transform::DropFilteredDocumentsTransform.instance,
       Kustomize::Transform::PurgeInternalAnnotationsTransform.instance
-    ].flatten
+    ].flatten.compact
   end
 
   def emit

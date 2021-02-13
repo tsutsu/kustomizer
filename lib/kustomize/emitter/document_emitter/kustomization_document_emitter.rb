@@ -6,6 +6,8 @@ require 'kustomize/emitter/generator_plugins_emitter'
 require 'kustomize/transform/json_6902_patch_transform'
 require 'kustomize/transform/image_transform'
 require 'kustomize/transform/namespace_transform'
+require 'kustomize/transform/common_annotations_transform'
+require 'kustomize/transform/common_labels_transform'
 require 'kustomize/transform/fingerprint_suffix_transform'
 require 'kustomize/transform/ref_fixup_transform'
 require 'kustomize/transform/purge_internal_annotations_transform'
@@ -101,12 +103,30 @@ class Kustomize::Emitter::DocumentEmitter::KustomizationDocumentEmitter < Kustom
     end
   end
 
+  def common_annotations_transforms
+    if new_annots = @doc['commonAnnotations']
+      [Kustomize::Transform::CommonAnnotationsTransform.create(new_annots)]
+    else
+      []
+    end
+  end
+
+  def common_labels_transforms
+    if new_labels = @doc['commonLabels']
+      [Kustomize::Transform::CommonLabelsTransform.create(new_labels)]
+    else
+      []
+    end
+  end
+
   def transforms
     return @transforms if @transforms
 
     @transforms = [
       self.namespace_transforms,
       self.image_transforms,
+      self.common_annotations_transforms,
+      self.common_labels_transforms,
       self.json_6902_patch_transforms,
       self.transformer_plugin_transforms
     ].flatten

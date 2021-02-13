@@ -20,7 +20,7 @@ module Kustomize
         raise ArgumentError, "must be a kustomization document or a path to one, instead got: #{rel_path_or_rc.inspect}"
       end
 
-    Kustomize::Emitter::FinalizerEmitter.new(base_emitter)
+    Kustomize::Emitter::FinalizerEmitter.new(base_emitter, session: session)
   end
 
   def self.load_doc(rc, session: Kustomize::Session.new, source_path:)
