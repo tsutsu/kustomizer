@@ -18,6 +18,8 @@ class Kustomize::Json6902Patch::GsubOp < Kustomize::Json6902Patch::Op
   def apply(rc)
     @lenses.inject(rc) do |doc, lens|
       lens.update_in(doc) do |orig_value|
+        next(:keep) unless orig_value.kind_of?(String)
+
         new_value = orig_value.gsub(@pattern, @replacement)
 
         if new_value != orig_value
