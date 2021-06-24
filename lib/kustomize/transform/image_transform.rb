@@ -24,10 +24,7 @@ class Kustomize::Transform::ImageTransform < Kustomize::Transform
   end
 
   TEMPLATE_POD_SPEC_LENS = Lens["spec", "template", "spec", "containers", Access.all, "image"]
-
-  TEMPLATE_CRONJOB_SPEC_LENS = TEMPLATE_POD_SPEC_LENS.map do |lens|
-    Lens["spec", "jobTemplate"] + lens
-  end
+  TEMPLATE_CRONJOB_SPEC_LENS = Lens["spec", "jobTemplate"] + TEMPLATE_POD_SPEC_LENS
 
   LENS_BY_KIND = {
     "Deployment" => TEMPLATE_POD_SPEC_LENS,
