@@ -25,10 +25,16 @@ class Kustomize::Transform::ImageTransform < Kustomize::Transform
 
   TEMPLATE_POD_SPEC_LENS = Lens["spec", "template", "spec", "containers", Access.all, "image"]
 
+  TEMPLATE_CRONJOB_SPEC_LENS = TEMPLATE_POD_SPEC_LENS.map do |lens|
+    Lens["spec", "jobTemplate"] + lens
+  end
+
   LENS_BY_KIND = {
     "Deployment" => TEMPLATE_POD_SPEC_LENS,
     "DaemonSet" => TEMPLATE_POD_SPEC_LENS,
-    "StatefulSet" => TEMPLATE_POD_SPEC_LENS
+    "StatefulSet" => TEMPLATE_POD_SPEC_LENS,
+    "Job" => TEMPLATE_POD_SPEC_LENS,
+    "CronJob" => TEMPLATE_CRONJOB_SPEC_LENS
   }
 
   def rewrite(rc_doc)
