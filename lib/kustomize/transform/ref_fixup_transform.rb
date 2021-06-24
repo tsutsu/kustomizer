@@ -24,10 +24,16 @@ class Kustomize::Transform::RefFixupTransform < Kustomize::Transform
       Lens["spec", "template", "spec", "volumes", Access.all, "secret", "secretName"]
   ]
 
+  CRONJOB_TEMPLATE_LENSES = POD_TEMPLATE_LENSES.map do |lens|
+    Lens["spec", "jobTemplate"] + lens
+  end
+
   KEY_REF_LENSES_BY_KIND = {
     "Deployment" => POD_TEMPLATE_LENSES,
     "StatefulSet" => POD_TEMPLATE_LENSES,
-    "DaemonSet" => POD_TEMPLATE_LENSES
+    "DaemonSet" => POD_TEMPLATE_LENSES,
+    "Job" => POD_TEMPLATE_LENSES,
+    "CronJob" => CRONJOB_TEMPLATE_LENSES
   }
 
   def rewrite_all(rcs)
