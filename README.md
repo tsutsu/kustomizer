@@ -47,7 +47,7 @@ Status of support for other Kustomize features:
 
 * [ ] Automatic name suffixing of generated resources
   * [x] Secrets
-  * [ ] ConfigMaps
+  * [x] ConfigMaps
 
 Status of support for "extra" features not supported by Kustomize:
 
