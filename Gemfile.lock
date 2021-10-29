@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kustomizer (0.1.15)
+    kustomizer (0.1.16)
       accessory (~> 0.1.11)
       base32-multi
 
@@ -11,7 +11,7 @@ GEM
     accessory (0.1.11)
     base32-multi (0.1.1)
     diff-lcs (1.4.4)
-    rake (13.0.3)
+    rake (13.0.6)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -33,3 +33,6 @@ DEPENDENCIES
   kustomizer!
   rake (~> 13.0)
   rspec (~> 3.0)
+
+BUNDLED WITH
+   2.2.30
