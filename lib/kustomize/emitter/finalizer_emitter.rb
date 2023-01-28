@@ -5,6 +5,7 @@ require 'kustomize/transform/ref_fixup_transform'
 require 'kustomize/transform/filter_for_session_specified_component_transform'
 require 'kustomize/transform/drop_filtered_documents_transform'
 require 'kustomize/transform/purge_internal_annotations_transform'
+require 'kustomize/transform/application_order_transform'
 
 class Kustomize::Emitter::FinalizerEmitter < Kustomize::Emitter
   def initialize(input_emitter, session:)
@@ -31,7 +32,8 @@ class Kustomize::Emitter::FinalizerEmitter < Kustomize::Emitter
       Kustomize::Transform::RefFixupTransform.instance,
       final_filters,
       Kustomize::Transform::DropFilteredDocumentsTransform.instance,
-      Kustomize::Transform::PurgeInternalAnnotationsTransform.instance
+      Kustomize::Transform::PurgeInternalAnnotationsTransform.instance,
+      Kustomize::Transform::ApplicationOrderTransform.instance
     ].flatten.compact
   end
 
